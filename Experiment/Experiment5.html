@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Employee Salary Management</title>
+
+<style>
+
+body{
+font-family:'Segoe UI',sans-serif;
+background:linear-gradient(135deg,#dfe9f3,#ffffff);
+margin:0;
+padding:0;
+}
+
+.container{
+width:700px;
+max-width:90%;
+margin:40px auto;
+padding:25px;
+background:white;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+h2{
+margin-bottom:20px;
+color:#333;
+text-align:center;
+}
+
+input{
+width:90%;
+padding:10px;
+margin:6px 0;
+border:1px solid #ccc;
+border-radius:6px;
+font-size:14px;
+}
+
+button{
+padding:10px 14px;
+margin:6px 4px;
+border:none;
+border-radius:6px;
+background:#007bff;
+color:white;
+font-size:14px;
+cursor:pointer;
+transition:0.2s;
+}
+
+button:hover{
+background:#0056b3;
+}
+
+.btn-group{
+margin-top:10px;
+}
+
+#output{
+margin-top:20px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:10px;
+}
+
+th,td{
+padding:10px;
+border:1px solid #ddd;
+text-align:center;
+}
+
+th{
+background:#007bff;
+color:white;
+}
+
+tr:nth-child(even){
+background:#f9f9f9;
+}
+
+.card{
+background:#f8f9fa;
+padding:15px;
+border-radius:8px;
+margin-top:10px;
+text-align:center;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>💼 Employee Salary Management</h2>
+
+<input type="text" id="name" placeholder="Employee Name">
+
+<input type="text" id="empId" placeholder="Employee ID">
+
+<input type="number" id="salary" placeholder="Salary">
+
+<input type="text" id="dept" placeholder="Department">
+
+<br>
+
+<button onclick="addEmployee()">
+➕ Add Employee
+</button>
+
+<div class="btn-group">
+
+<button onclick="displayEmployees()">
+📋 Display All
+</button>
+
+<button onclick="filterSalary()">
+💰 Salary > 50000
+</button>
+
+<button onclick="totalSalary()">
+🧮 Total Salary
+</button>
+
+<button onclick="averageSalary()">
+📊 Average Salary
+</button>
+
+<button onclick="countDepartment()">
+🏢 Dept Count
+</button>
+
+</div>
+
+<div id="output"></div>
+
+</div>
+
+<script>
+
+let employees = [];
+
+function addEmployee(){
+
+let name = document.getElementById("name").value;
+
+let empId = document.getElementById("empId").value;
+
+let salary = parseFloat(document.getElementById("salary").value);
+
+let dept = document.getElementById("dept").value;
+
+if(name === "" || empId === "" || isNaN(salary) || dept === ""){
+
+alert("Please fill all fields properly");
+
+return;
+
+}
+
+let employee = {
+
+name:name,
+id:empId,
+salary:salary,
+department:dept
+
+};
+
+employees.push(employee);
+
+alert("Employee Added Successfully!");
+
+document.getElementById("name").value = "";
+document.getElementById("empId").value = "";
+document.getElementById("salary").value = "";
+document.getElementById("dept").value = "";
+
+}
+
+function displayEmployees(){
+
+if(employees.length === 0){
+
+document.getElementById("output").innerHTML =
+"<div class='card'>No Employees Found</div>";
+
+return;
+
+}
+
+let output = `
+
+<h3>All Employees</h3>
+
+<table>
+
+<tr>
+<th>Name</th>
+<th>ID</th>
+<th>Salary</th>
+<th>Department</th>
+</tr>
+
+`;
+
+employees.forEach(emp => {
+
+output += `
+
+<tr>
+<td>${emp.name}</td>
+<td>${emp.id}</td>
+<td>₹${emp.salary}</td>
+<td>${emp.department}</td>
+</tr>
+
+`;
+
+});
+
+output += "</table>";
+
+document.getElementById("output").innerHTML = output;
+
+}
+
+function filterSalary(){
+
+let filtered = employees.filter(
+emp => emp.salary > 50000
+);
+
+if(filtered.length === 0){
+
+document.getElementById("output").innerHTML =
+"<div class='card'>No employees above ₹50,000</div>";
+
+return;
+
+}
+
+let output = `
+
+<h3>Salary > ₹50,000</h3>
+
+<table>
+
+<tr>
+<th>Name</th>
+<th>Salary</th>
+</tr>
+
+`;
+
+filtered.forEach(emp => {
+
+output += `
+
+<tr>
+<td>${emp.name}</td>
+<td>₹${emp.salary}</td>
+</tr>
+
+`;
+
+});
+
+output += "</table>";
+
+document.getElementById("output").innerHTML = output;
+
+}
+
+function totalSalary(){
+
+let total = employees.reduce(
+(sum, emp) => sum + emp.salary, 0
+);
+
+document.getElementById("output").innerHTML =
+
+`<div class="card">
+Total Salary: ₹${total}
+</div>`;
+
+}
+
+function averageSalary(){
+
+if(employees.length === 0){
+
+document.getElementById("output").innerHTML =
+
+"<div class='card'>No employee records</div>";
+
+return;
+
+}
+
+let total = employees.reduce(
+(sum, emp) => sum + emp.salary, 0
+);
+
+let avg = total / employees.length;
+
+document.getElementById("output").innerHTML =
+
+`<div class="card">
+Average Salary: ₹${avg.toFixed(2)}
+</div>`;
+
+}
+
+function countDepartment(){
+
+let deptName = prompt("Enter Department Name:");
+
+let count = employees.filter(
+emp => emp.department === deptName
+).length;
+
+document.getElementById("output").innerHTML =
+
+`<div class="card">
+${deptName} Department: ${count} Employees
+</div>`;
+
+}
+
+</script>
+
+</body>
+</html>
